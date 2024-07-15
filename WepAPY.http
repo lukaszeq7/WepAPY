@@ -1,6 +1,0 @@
-@WepAPY_HostAddress = http://localhost:5299
-
-GET {{WepAPY_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
