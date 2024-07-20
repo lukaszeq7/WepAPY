@@ -45,5 +45,30 @@ namespace WepAPY.Services.StudentService
 
             return serviceResponse;             
         }
+
+        public async Task<ServiceResponse<GetStudentDto>> UpdateStudent(UpdateStudentDto updatedStudent)
+        {
+            var serviceResponse = new ServiceResponse<GetStudentDto>();
+
+            try
+            {
+                var student = students.FirstOrDefault(c => c.Id == updatedStudent.Id);
+                if(student is null)
+                    throw new Exception($"Student with Id '{updatedStudent.Id}' not found.");
+
+                student.Name = updatedStudent.Name;
+                student.Points = updatedStudent.Points;
+                student.Type = updatedStudent.Type;
+
+                serviceResponse.Data = _mapper.Map<GetStudentDto>(student);
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }            
+
+            return serviceResponse;
+        }
     }
 }

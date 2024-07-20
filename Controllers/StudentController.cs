@@ -35,5 +35,17 @@ namespace WepAPY.Controllers
         {        
             return Ok(await _studentService.AddStudent(newStudent));
         }
+
+        [HttpPut]
+        public async Task<ActionResult<ServiceResponse<List<GetStudentDto>>>> UpdateStudent(UpdateStudentDto updatedStudent)
+        {        
+            var response = await _studentService.UpdateStudent(updatedStudent);
+            if(response.Data is null)
+            {
+                return NotFound(response);
+            }
+            
+            return Ok();
+        }
     }
 }
