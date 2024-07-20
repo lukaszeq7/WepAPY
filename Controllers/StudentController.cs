@@ -44,8 +44,20 @@ namespace WepAPY.Controllers
             {
                 return NotFound(response);
             }
-            
+
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServiceResponse<List<GetStudentDto>>>> DeleteStudent(int id)
+        {
+            var response = await _studentService.DeleteStudents(id);
+            if(response.Data is null)
+            {
+                return NotFound(response);
+            }
+
+            return Ok(response);
         }
     }
 }

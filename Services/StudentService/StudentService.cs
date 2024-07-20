@@ -29,6 +29,29 @@ namespace WepAPY.Services.StudentService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<List<GetStudentDto>>> DeleteStudents(int id)
+        {
+            var serviceResponse = new ServiceResponse<List<GetStudentDto>>();
+
+            try
+            {
+                var student = students.First(c => c.Id == id);
+                if(student is null)
+                    throw new Exception($"Student with Id '{id}' not found.");
+
+                students.Remove(student);
+                
+                serviceResponse.Data = students.Select(c => _mapper.Map<GetStudentDto>(c)).ToList();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }            
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<List<GetStudentDto>>> GetAllStudents()
         {
             var serviceResponse = new ServiceResponse<List<GetStudentDto>>();

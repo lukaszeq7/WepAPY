@@ -11,5 +11,6 @@ namespace WepAPY.Services.StudentService
         Task<ServiceResponse<GetStudentDto>> GetStudentById(int id);
         Task<ServiceResponse<List<GetStudentDto>>> AddStudent(AddStudentDto newStudent);
         Task<ServiceResponse<GetStudentDto>> UpdateStudent(UpdateStudentDto updatedStudent);
+        Task<ServiceResponse<List<GetStudentDto>>> DeleteStudents(int id);
     }
 }
