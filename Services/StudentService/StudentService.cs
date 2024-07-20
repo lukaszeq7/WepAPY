@@ -12,20 +12,23 @@ namespace WepAPY.Services.StudentService
             new Student { Id = 1, Name = "Rambo" }
         };
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
 
-        public StudentService(IMapper mapper)
+        public StudentService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<ServiceResponse<List<GetStudentDto>>> AddStudent(AddStudentDto newStudent)
         {
             var serviceResponse = new ServiceResponse<List<GetStudentDto>>();
             var student = _mapper.Map<Student>(newStudent);
-            student.Id = students.Max(c => c.Id) + 1;
-            students.Add(student);
-            serviceResponse.Data = students.Select(c => _mapper.Map<GetStudentDto>(c)).ToList();
 
+            _context.Students.Add(student);
+            await _context.SaveChangesAsync();            
+
+            serviceResponse.Data = await _context.Students.Select(c => _mapper.Map<GetStudentDto>(c)).ToListAsync();
             return serviceResponse;
         }
 
@@ -35,13 +38,14 @@ namespace WepAPY.Services.StudentService
 
             try
             {
-                var student = students.First(c => c.Id == id);
+                var student = await _context.Students.FirstOrDefaultAsync(c => c.Id == id);
                 if(student is null)
                     throw new Exception($"Student with Id '{id}' not found.");
 
-                students.Remove(student);
-                
-                serviceResponse.Data = students.Select(c => _mapper.Map<GetStudentDto>(c)).ToList();
+                _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Data = await _context.Students.Select(c => _mapper.Map<GetStudentDto>(c)).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -55,7 +59,8 @@ namespace WepAPY.Services.StudentService
         public async Task<ServiceResponse<List<GetStudentDto>>> GetAllStudents()
         {
             var serviceResponse = new ServiceResponse<List<GetStudentDto>>();
-            serviceResponse.Data = students.Select(c => _mapper.Map<GetStudentDto>(c)).ToList();
+            var dbStudents = await _context.Students.ToListAsync();
+            serviceResponse.Data = dbStudents.Select(c => _mapper.Map<GetStudentDto>(c)).ToList();
 
             return serviceResponse;
         }
@@ -63,8 +68,8 @@ namespace WepAPY.Services.StudentService
         public async Task<ServiceResponse<GetStudentDto>> GetStudentById(int id)
         {
             var serviceResponse = new ServiceResponse<GetStudentDto>();
-            var student = students.FirstOrDefault(c => c.Id == id);
-            serviceResponse.Data = _mapper.Map<GetStudentDto>(student);
+            var dbStudent = await _context.Students.FirstOrDefaultAsync(c => c.Id == id);
+            serviceResponse.Data = _mapper.Map<GetStudentDto>(dbStudent);
 
             return serviceResponse;             
         }
@@ -75,15 +80,16 @@ namespace WepAPY.Services.StudentService
 
             try
             {
-                var student = students.FirstOrDefault(c => c.Id == updatedStudent.Id);
-                if(student is null)
+                var dbStudent = await _context.Students.FirstOrDefaultAsync(c => c.Id == updatedStudent.Id);
+                if(dbStudent is null)
                     throw new Exception($"Student with Id '{updatedStudent.Id}' not found.");
 
-                student.Name = updatedStudent.Name;
-                student.Points = updatedStudent.Points;
-                student.Type = updatedStudent.Type;
+                dbStudent.Name = updatedStudent.Name;
+                dbStudent.Points = updatedStudent.Points;
+                dbStudent.Type = updatedStudent.Type;
 
-                serviceResponse.Data = _mapper.Map<GetStudentDto>(student);
+                await _context.SaveChangesAsync();
+                serviceResponse.Data = _mapper.Map<GetStudentDto>(dbStudent);
             }
             catch (Exception ex)
             {

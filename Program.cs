@@ -2,9 +2,14 @@ global using WepAPY.Models;
 global using WepAPY.Services.StudentService;
 global using WepAPY.Dtos.Student;
 global using AutoMapper;
+global using Microsoft.EntityFrameworkCore;
+global using WepAPY.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<DataContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 builder.Services.AddControllers();
