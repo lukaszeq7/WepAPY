@@ -19,19 +19,19 @@ namespace WepAPY.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<Student>>> Get()
+        public async Task<ActionResult<ServiceResponse<List<Student>>>> Get()
         {
             return Ok(await _studentService.GetAllStudents());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Student>>> GetSingle(int id)
+         public async Task<ActionResult<ServiceResponse<List<Student>>>> GetSingle(int id)
         {
             return Ok(await _studentService.GetStudentById(id));
         }
         
         [HttpPost]
-        public async Task<ActionResult<List<Student>>> AddStudent(Student newStudent)
+        public async Task<ActionResult<ServiceResponse<List<Student>>>> AddStudent(Student newStudent)
         {        
             return Ok(await _studentService.AddStudent(newStudent));
         }

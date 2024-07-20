@@ -12,24 +12,30 @@ namespace WepAPY.Services.StudentService
             new Student { Id = 1, Name = "Rambo" }
         };
 
-        public async Task<List<Student>> AddStudent(Student newStudent)
+        public async Task<ServiceResponse<List<Student>>> AddStudent(Student newStudent)
         {
+            var serviceResponse = new ServiceResponse<List<Student>>();
             students.Add(newStudent);
-            return students;
+            serviceResponse.Data = students;
+
+            return serviceResponse;
         }
 
-        public async Task<List<Student>> GetAllStudents()
+        public async Task<ServiceResponse<List<Student>>> GetAllStudents()
         {
-            return students;
+            var serviceResponse = new ServiceResponse<List<Student>>();
+            serviceResponse.Data = students;
+
+            return serviceResponse;
         }
 
-        public async Task<Student> GetStudentById(int id)
+        public async Task<ServiceResponse<Student>> GetStudentById(int id)
         {
-             var student = students.FirstOrDefault(c => c.Id == id);
-             if(student != null)
-                return student;
+            var serviceResponse = new ServiceResponse<Student>();
+            var student = students.FirstOrDefault(c => c.Id == id);
+            serviceResponse.Data = student;
 
-            throw new Exception("Student not found");
+            return serviceResponse;             
         }
     }
 }

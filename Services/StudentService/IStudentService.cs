@@ -7,8 +7,8 @@ namespace WepAPY.Services.StudentService
 {
     public interface IStudentService
     {
-        Task<List<Student>> GetAllStudents();
-        Task<Student> GetStudentById(int id);
-        Task<List<Student>> AddStudent(Student newStudent);
+        Task<ServiceResponse<List<Student>>> GetAllStudents();
+        Task<ServiceResponse<Student>> GetStudentById(int id);
+        Task<ServiceResponse<List<Student>>> AddStudent(Student newStudent);
     }
 }
